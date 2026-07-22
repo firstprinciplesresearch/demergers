@@ -1,0 +1,225 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces */
+  --color-space-black: #030308;
+  --color-space-dark: #05050f;
+  --color-space-panel: #0a0a14;
+  --color-space-glass: rgba(5, 5, 15, 0.8);
+  --color-space-border: rgba(255, 255, 255, 0.06);
+
+  /* Brand accents (gold + orange) */
+  --color-accent-cyan: #ffb800; /* primary accent (name kept for parity) */
+  --color-accent-orange: #ff6b00; /* secondary accent */
+  --color-accent-gold: #ffb800;
+
+  /* Type */
+  --font-sans: "Aptos", "Segoe UI", "Inter", system-ui, Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Roboto Mono", "SFMono-Regular", Consolas,
+    monospace;
+}
+
+/* ----------------------------------------------------------------------------
+   Base
+---------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis owns smooth scroll */
+  background-color: var(--color-space-black);
+}
+
+body {
+  background-color: var(--color-space-black);
+  color: #fff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(255, 184, 0, 0.28);
+  color: #fff;
+}
+
+/* ----------------------------------------------------------------------------
+   Ambient background layers
+---------------------------------------------------------------------------- */
+.bg-grid-pattern {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 40px 40px;
+}
+
+.radial-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 45%,
+    rgba(3, 3, 8, 0.85) 100%
+  );
+}
+
+.bg-radar-sweep {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 184, 0, 0.08) 25deg,
+    transparent 60deg
+  );
+}
+
+.text-gradient-gold {
+  background: linear-gradient(
+    120deg,
+    var(--color-accent-gold) 0%,
+    var(--color-accent-orange) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Micro-label helper (mono, uppercase, wide-tracked) */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-accent-gold);
+}
+
+/* Glass card */
+.glass {
+  background: rgba(10, 10, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ----------------------------------------------------------------------------
+   Interactive control base
+---------------------------------------------------------------------------- */
+.interactive-control {
+  transition: border-color 0.25s ease, background-color 0.25s ease,
+    box-shadow 0.25s ease, transform 0.12s ease, color 0.25s ease;
+  outline: none;
+}
+.interactive-control:hover {
+  border-color: rgba(255, 184, 0, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 184, 0, 0.18),
+    0 0 24px -6px rgba(255, 184, 0, 0.35);
+}
+.interactive-control:focus-visible {
+  border-color: var(--color-accent-gold);
+  box-shadow: 0 0 0 2px rgba(255, 184, 0, 0.45);
+}
+.interactive-control:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* ----------------------------------------------------------------------------
+   Presentation mode
+---------------------------------------------------------------------------- */
+html.presentation-active,
+body.presentation-active {
+  overflow: hidden !important;
+}
+.presentation-active::-webkit-scrollbar {
+  display: none;
+}
+
+/* ----------------------------------------------------------------------------
+   Contrast overrides (bump faint text to legible alphas)
+---------------------------------------------------------------------------- */
+[class*="text-white/20"] {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+[class*="text-white/30"] {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+[class*="text-white/40"] {
+  color: rgba(255, 255, 255, 0.58) !important;
+}
+[class*="text-white/50"] {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+
+/* ----------------------------------------------------------------------------
+   Scrollbar
+---------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 184, 0, 0.55);
+}
+
+/* ----------------------------------------------------------------------------
+   Animations
+---------------------------------------------------------------------------- */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
+.animate-spin-slower {
+  animation: spin-slow 90s linear infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+.animate-breathe {
+  animation: breathe 9s ease-in-out infinite;
+}
+
+@keyframes float-up {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
