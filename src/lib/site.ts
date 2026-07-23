@@ -95,10 +95,10 @@ export const CHAPTERS: ChapterMeta[] = [
     n: 9,
     slug: "what-most-people-miss",
     label: "09 / 10",
-    kicker: "The Edge",
-    title: "What Most People Miss",
+    kicker: "Live Analysis",
+    title: "Dissecting a Live Demerger",
     blurb:
-      "The parent stub, the tax-free distribution, and the twelve-to-twenty-four month window.",
+      "Analyzing a live ongoing demerger from scratch, going through annual reports, scheme documents, and valuations.",
   },
   {
     n: 10,
