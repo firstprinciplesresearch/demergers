@@ -10,6 +10,7 @@ import { usePresentation } from "@/components/presentation/use-presentation";
 import Deck, { type DeckScene } from "@/components/presentation/deck";
 import { Kicker, Stat, OrbitalRings, AnimatedCounter, SceneHeader } from "@/components/scene/kit";
 import { cn } from "@/lib/utils";
+import IndiaMap from "@/components/india-map";
 
 // Register GSAP ScrollTrigger safely on client
 if (typeof window !== "undefined") {
@@ -628,11 +629,11 @@ function IndiaMapScene({
   const [selectedPin, setSelectedPin] = useState<number | null>(null);
 
   const pins: IndiaPin[] = [
-    { city: "Mumbai", parentCo: "Reliance Industries", spinCo: "Jio Financial Services", x: 33, y: 62 },
-    { city: "Bengaluru", parentCo: "Wipro Limited", spinCo: "Wipro Enterprises", x: 44, y: 78 },
-    { city: "Chennai", parentCo: "IDFC Limited", spinCo: "IDFC First Bank", x: 48, y: 82 },
-    { city: "Kolkata", parentCo: "ITC Limited", spinCo: "ITC Hotels (Pending)", x: 74, y: 55 },
-    { city: "Ahmedabad", parentCo: "Adani Enterprises", spinCo: "Adani Green Energy", x: 26, y: 52 },
+    { city: "Mumbai", parentCo: "Reliance Industries", spinCo: "Jio Financial Services", x: 145, y: 435 },
+    { city: "Bengaluru", parentCo: "Wipro Limited", spinCo: "Wipro Enterprises", x: 215, y: 575 },
+    { city: "Chennai", parentCo: "IDFC Limited", spinCo: "IDFC First Bank", x: 275, y: 595 },
+    { city: "Kolkata", parentCo: "ITC Limited", spinCo: "ITC Hotels (Pending)", x: 455, y: 365 },
+    { city: "Ahmedabad", parentCo: "Adani Enterprises", spinCo: "Adani Green Energy", x: 135, y: 330 },
   ];
 
   // 3D Card Hover Rotation Physics
@@ -663,63 +664,44 @@ function IndiaMapScene({
         {/* Simple geometric grid backdrop */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
 
-        {/* Minimal dot-mesh stylized SVG of India */}
-        <svg viewBox="0 0 200 240" className="h-[320px] w-auto text-white/5 fill-none overflow-visible">
-          {/* Main India boundary polygon outline */}
-          <polygon
-            points="100,20 120,40 115,65 140,75 145,95 180,95 190,115 160,120 150,135 150,150 120,160 110,185 105,210 100,225 90,210 88,180 75,170 70,155 60,145 60,130 50,125 55,108 30,105 45,95 70,95 72,75 80,68 85,55 90,40"
-            className="stroke-white/10 stroke-[1.5]"
-            strokeDasharray="4 4"
-          />
-
-          {/* Dots at vertices representing boundary points */}
-          <circle cx="100" cy="20" r="1.5" fill="rgba(255,255,255,0.2)" />
-          <circle cx="140" cy="75" r="1.5" fill="rgba(255,255,255,0.2)" />
-          <circle cx="180" cy="95" r="1.5" fill="rgba(255,255,255,0.2)" />
-          <circle cx="100" cy="225" r="1.5" fill="rgba(255,255,255,0.2)" />
-          <circle cx="30" cy="105" r="1.5" fill="rgba(255,255,255,0.2)" />
-
-          {/* Connection constellation links */}
-          <line x1="100" y1="20" x2="115" y2="65" stroke="rgba(255,255,255,0.04)" strokeWidth="0.8" />
-          <line x1="115" y1="65" x2="100" y2="225" stroke="rgba(255,255,255,0.04)" strokeWidth="0.8" />
-          <line x1="30" y1="105" x2="100" y2="225" stroke="rgba(255,255,255,0.04)" strokeWidth="0.8" />
-
-          {/* Pinned demerger cases with staggered delays */}
-          {pins.map((pin, i) => {
-            const pinX = (pin.x / 100) * 200;
-            const pinY = (pin.y / 100) * 240;
-            return (
-              <g key={pin.city} className="cursor-pointer group" onClick={() => setSelectedPin(i)}>
-                {/* Glow ring */}
-                <circle
-                  cx={pinX}
-                  cy={pinY}
-                  r="7"
-                  className="fill-accent-gold/10 stroke-accent-gold/40 stroke-[0.8] animate-ping"
-                  style={{ animationDuration: "3s", animationDelay: `${i * 0.4}s` }}
-                />
-                {/* Main pin core */}
-                <circle
-                  cx={pinX}
-                  cy={pinY}
-                  r="3.5"
-                  className={cn(
-                    "transition-all duration-300",
-                    selectedPin === i ? "fill-white r-[4.5]" : "fill-accent-gold group-hover:fill-white"
-                  )}
-                />
-                {/* Micro city label */}
-                <text
-                  x={pinX + 7}
-                  y={pinY + 3}
-                  className="fill-white/40 font-mono text-[7px] uppercase tracking-wider group-hover:fill-white/80 transition-colors pointer-events-none"
-                >
-                  {pin.city}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+        {/* Real detailed India Map SVG with custom children overlays */}
+        <div className="h-[300px] w-auto relative">
+          <IndiaMap className="stroke-white/10 fill-white/[0.02] h-full w-auto">
+            {/* Pinned demerger cases with staggered delays */}
+            {pins.map((pin, i) => {
+              return (
+                <g key={pin.city} className="cursor-pointer group" onClick={() => setSelectedPin(i)}>
+                  {/* Glow ring */}
+                  <circle
+                    cx={pin.x}
+                    cy={pin.y}
+                    r="14"
+                    className="fill-accent-gold/10 stroke-accent-gold/40 stroke-[0.8] animate-ping"
+                    style={{ animationDuration: "3s", animationDelay: `${i * 0.4}s` }}
+                  />
+                  {/* Main pin core */}
+                  <circle
+                    cx={pin.x}
+                    cy={pin.y}
+                    r="6.5"
+                    className={cn(
+                      "transition-all duration-300",
+                      selectedPin === i ? "fill-white r-[8.5]" : "fill-accent-gold group-hover:fill-white"
+                    )}
+                  />
+                  {/* Micro city label */}
+                  <text
+                    x={pin.x + 12}
+                    y={pin.y + 4}
+                    className="fill-white/50 font-mono text-[9px] uppercase tracking-wider group-hover:fill-white/80 transition-colors pointer-events-none"
+                  >
+                    {pin.city}
+                  </text>
+                </g>
+              );
+            })}
+          </IndiaMap>
+        </div>
 
         {/* Mini information window for pinned demerger */}
         <AnimatePresence>
