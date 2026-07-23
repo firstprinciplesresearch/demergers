@@ -104,10 +104,10 @@ export const CHAPTERS: ChapterMeta[] = [
     n: 10,
     slug: "the-opportunity",
     label: "10 / 10",
-    kicker: "The Thesis",
-    title: "This Has Only Just Begun",
+    kicker: "Common Pitfalls",
+    title: "Investor Mistakes & Pitfalls",
     blurb:
-      "Building a demerger strategy from first principles. Where the next unlock is hiding.",
+      "Ending the course with the mistakes that repeatedly show up in the market, and the final thesis takeaway.",
   },
 ];
 
