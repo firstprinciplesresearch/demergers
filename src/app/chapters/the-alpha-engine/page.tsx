@@ -389,10 +389,10 @@ function EndingScene({ active, controller }: { active: boolean; controller: any 
         className="mt-12"
       >
         <Link
-          href="/chapters/global-comparison"
+          href="/chapters/case-studies"
           className="interactive-control bg-accent-gold hover:bg-accent-gold/90 text-black flex items-center gap-3 rounded-full px-7 py-3.5 text-sm font-semibold tracking-wide shadow-2xl"
         >
-          <span>Continue to Chapter 7</span>
+          <span>Continue to Case Studies</span>
           <ArrowRight size={16} />
         </Link>
       </motion.div>

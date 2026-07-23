@@ -75,21 +75,21 @@ export const CHAPTERS: ChapterMeta[] = [
   },
   {
     n: 7,
-    slug: "global-comparison",
+    slug: "case-studies",
     label: "07 / 10",
+    kicker: "The Evidence",
+    title: "Learning Through Case Studies",
+    blurb:
+      "Significant wealth creators, moderate outcomes, and disappointments. Why separations win or fail.",
+  },
+  {
+    n: 8,
+    slug: "global-comparison",
+    label: "08 / 10",
     kicker: "The Field",
     title: "Demergers Across Borders",
     blurb:
       "The United States, Europe, and India. Same logic, very different tax and regulatory terrain.",
-  },
-  {
-    n: 8,
-    slug: "case-studies",
-    label: "08 / 10",
-    kicker: "The Evidence",
-    title: "Four Separations That Repriced The Map",
-    blurb:
-      "From eBay and PayPal to Reliance and Jio Financial. What the tape actually did.",
   },
   {
     n: 9,

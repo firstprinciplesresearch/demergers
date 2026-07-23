@@ -63,12 +63,12 @@ export default function GlobalComparisonChapter() {
     { id: "india", name: "India Spotlight", render: () => <India /> },
     {
       id: "finale",
-      name: "To The Case Studies",
+      name: "Path Forward",
       render: (a) => (
         <ChapterFinale
           current="global-comparison"
           active={a}
-          thesis="The logic travels. Now let us watch it play out on the tape, in four separations that repriced the map."
+          thesis="Global regulatory terrains differ, but market behaviors are identical. Next, we address the nuances almost everyone overlooks."
         />
       ),
     },
