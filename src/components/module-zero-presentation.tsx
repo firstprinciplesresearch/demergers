@@ -86,12 +86,12 @@ function HeroQuoteScene({
   const seg = 1 / totalFrames;
   const index = 3;
 
-  // Word-by-word quote data
-  const quoteWords = "Fish where the fish are.".split(" ");
+  // Split quotation words
+  const quoteWords = "\"Fish where the fish are.\"".split(" ");
 
   // Map scroll progress to scale and top-left translation
   const quoteScale = useTransform(progress, [seg * index, seg * (index + 1)], [1, 0.42]);
-  const quoteX = useTransform(progress, [seg * index, seg * (index + 1)], ["0%", "-33vw"]);
+  const quoteX = useTransform(progress, [seg * index, seg * (index + 1)], ["0%", "-51vw"]);
   const quoteY = useTransform(progress, [seg * index, seg * (index + 1)], ["0vh", "-38vh"]);
   const quoteOpacity = useTransform(progress, [seg * index, seg * index + seg * 0.9, seg * (index + 1)], [1, 1, 0.25]);
 
@@ -112,11 +112,11 @@ function HeroQuoteScene({
   const y = presentationActive ? "0vh" : quoteY;
   const opacity = presentationActive ? 1 : quoteOpacity;
 
-  const imgOpacity = presentationActive ? (active ? 0.35 : 0) : imgOpacityScroll;
+  const imgOpacity = presentationActive ? (active ? 1 : 0) : imgOpacityScroll;
   const imgScale = presentationActive ? 1 : imgScaleScroll;
 
   return (
-    <div className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
+    <div className="relative w-full max-w-5xl mx-auto flex items-center justify-center min-h-[70vh]">
       {/* Background zoom layer */}
       <motion.div
         initial={{ scale: 1, opacity: 0.25 }}
@@ -125,77 +125,83 @@ function HeroQuoteScene({
         className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
       />
 
-      {/* Styled Portrait of Charlie Munger in the background/right */}
-      <motion.div
-        style={{
-          opacity: imgOpacity,
-          scale: imgScale,
-        }}
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-full max-w-[280px] sm:max-w-[360px] md:max-w-[440px] aspect-[4/5] pointer-events-none select-none z-0 overflow-hidden rounded-2xl border border-white/5 bg-[#030308] shadow-[0_0_50px_rgba(0,0,0,0.8)]"
-      >
-        <div className="relative w-full h-full">
-          <img
-            src="/images/charlie-munger.jpg"
-            alt="Charlie Munger"
-            className="w-full h-full object-cover grayscale opacity-45 brightness-75 contrast-125 scale-105 origin-center"
-          />
-          {/* Subtle gradient feathering to blend into dark page */}
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#030308]/70 to-[#030308]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030308] via-transparent to-[#030308]" />
-          <div className="absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent opacity-85" />
-        </div>
-      </motion.div>
-
-      {/* Quote text overlay */}
-      <motion.div
-        style={{
-          scale,
-          x,
-          y,
-          opacity,
-          transformOrigin: "center center",
-        }}
-        className="relative z-10 select-none text-center max-w-4xl"
-      >
-        <div className="mb-4 flex justify-center">
-          <Kicker>Chapter 00 / Introduction</Kicker>
+      <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_1.5fr] md:gap-14 items-center w-full">
+        {/* Left Column: Charlie Munger image card */}
+        <div className="flex justify-center md:justify-start">
+          <motion.div
+            style={{
+              opacity: imgOpacity,
+              scale: imgScale,
+            }}
+            className="glass relative w-full max-w-[260px] md:max-w-[320px] rounded-2xl border border-accent-gold/25 p-2.5 shadow-[0_0_30px_rgba(255,184,0,0.05)] bg-space-panel/90 z-0"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-space-black border border-white/5">
+              <img
+                src="/images/charlie-munger.png"
+                alt="Charlie Munger"
+                className="h-full w-full object-cover grayscale brightness-95 contrast-[1.02]"
+              />
+            </div>
+            <div className="mt-2.5 flex items-center justify-between px-1">
+              <span className="font-mono text-[8px] font-semibold uppercase tracking-wider text-accent-gold">
+                CHARLIE MUNGER
+              </span>
+              <span className="font-mono text-[8px] uppercase tracking-wider text-white/30">
+                1924 — 2023
+              </span>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Word staggered reveal */}
-        <h1 className="text-balance text-4xl font-black uppercase leading-[0.9] tracking-tighter sm:text-6xl md:text-8xl">
-          {quoteWords.map((word, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
-              animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 12, filter: "blur(4px)" }}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.15,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className={cn(
-                "inline-block mr-3",
-                (word.toLowerCase().includes("fish") || word.toLowerCase().includes("are")) && "text-gradient-gold"
-              )}
-            >
-              {word}
-            </motion.span>
-          ))}
-        </h1>
-
-        {/* Author reveal */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={active ? { opacity: 0.6 } : { opacity: 0 }}
-          transition={{ duration: 0.8, delay: 1.1 }}
-          className="mt-6 font-mono text-xs uppercase tracking-[0.24em] text-white/60 sm:text-sm"
+        {/* Right Column: Quote content */}
+        <motion.div
+          style={{
+            scale,
+            x,
+            y,
+            opacity,
+            transformOrigin: "center center",
+          }}
+          className="relative z-10 select-none text-left"
         >
-          — Charlie Munger
-        </motion.p>
-      </motion.div>
+          <div className="mb-4">
+            <Kicker>Chapter 00 / The Reframe</Kicker>
+          </div>
+
+          <h1 className="text-balance text-4xl font-black uppercase leading-[0.9] tracking-tighter sm:text-5xl md:text-7xl">
+            {quoteWords.map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+                animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 12, filter: "blur(4px)" }}
+                transition={{
+                  duration: 0.7,
+                  delay: i * 0.12,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={cn(
+                  "inline-block mr-2.5",
+                  (word.toLowerCase().includes("fish") || word.toLowerCase().includes("are")) && "text-gradient-gold"
+                )}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={active ? { opacity: 0.6 } : { opacity: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="mt-5 font-mono text-xs uppercase tracking-[0.24em] text-white/60 sm:text-sm"
+          >
+            — Charlie Munger
+          </motion.p>
+        </motion.div>
+      </div>
 
       {/* Floating hints */}
-      {active && (
+      {active && !presentationActive && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 0.3, y: 0 }}
