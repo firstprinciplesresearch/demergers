@@ -21,6 +21,11 @@ if (typeof window !== "undefined") {
 export default function ModuleZeroPresentation() {
   const scenes: DeckScene[] = [
     {
+      id: "presenter",
+      name: "The Presenter",
+      render: (active) => <PresenterProfileScene active={active} controller={controller} />,
+    },
+    {
       id: "quote",
       name: "The Reframe",
       render: (active) => <HeroQuoteScene active={active} controller={controller} />,
@@ -69,15 +74,16 @@ function HeroQuoteScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
+  const index = 1;
 
   // Word-by-word quote data
   const quoteWords = "Fish where the fish are.".split(" ");
 
   // Map scroll progress to scale and top-left translation
-  const quoteScale = useTransform(progress, [0, seg], [1, 0.42]);
-  const quoteX = useTransform(progress, [0, seg], ["0%", "-33vw"]);
-  const quoteY = useTransform(progress, [0, seg], ["0vh", "-38vh"]);
-  const quoteOpacity = useTransform(progress, [0, seg * 0.9, seg], [1, 1, 0.25]);
+  const quoteScale = useTransform(progress, [seg * index, seg * (index + 1)], [1, 0.42]);
+  const quoteX = useTransform(progress, [seg * index, seg * (index + 1)], ["0%", "-33vw"]);
+  const quoteY = useTransform(progress, [seg * index, seg * (index + 1)], ["0vh", "-38vh"]);
+  const quoteOpacity = useTransform(progress, [seg * index, seg * index + seg * 0.9, seg * (index + 1)], [1, 1, 0.25]);
 
   const scale = presentationActive ? 1 : quoteScale;
   const x = presentationActive ? "0%" : quoteX;
@@ -179,6 +185,7 @@ function AnimatedOceanScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
+  const index = 2;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boatRef = useRef<HTMLDivElement>(null);
@@ -189,7 +196,7 @@ function AnimatedOceanScene({
   const [boatYOffset, setBoatYOffset] = useState(0);
 
   // Scroll mode boat mapping: map Scene 2 scroll progress to 10% -> 65% width
-  const boatXScroll = useTransform(progress, [seg, seg * 2], [10, 65]);
+  const boatXScroll = useTransform(progress, [seg * index, seg * (index + 1)], [10, 65]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -410,6 +417,7 @@ function PerformanceChartScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
+  const index = 3;
 
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
@@ -429,7 +437,7 @@ function PerformanceChartScene({
   ], []);
 
   // Map scroll progress to chart draw (clip path width)
-  const clipWidthScroll = useTransform(progress, [seg * 2, seg * 3], [0, 100]);
+  const clipWidthScroll = useTransform(progress, [seg * index, seg * (index + 1)], [0, 100]);
   const [clipWidthPres, setClipWidthPres] = useState(0);
 
   useEffect(() => {
@@ -1030,6 +1038,140 @@ function EndingScene({
           <ArrowRight size={16} />
         </Link>
       </motion.div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   SCENE 0: PRESENTER PROFILE (Rahul Rao profile summary)
+   ========================================================================== */
+function PresenterProfileScene({
+  active,
+  controller,
+}: {
+  active: boolean;
+  controller: any;
+}) {
+  return (
+    <div className="relative w-full">
+      {/* Background zoom layer */}
+      <motion.div
+        initial={{ scale: 1, opacity: 0.2 }}
+        animate={active ? { scale: 1.08, opacity: 0.35 } : { scale: 1, opacity: 0.2 }}
+        transition={{ duration: 6, ease: "easeOut" }}
+        className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
+      />
+
+      <div className="relative z-10 grid gap-8 md:grid-cols-[320px_1fr] md:gap-14 items-center">
+        {/* Left Column: Styled Photo Card */}
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -24 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="glass relative mx-auto w-full max-w-[290px] md:max-w-none rounded-2xl border border-accent-gold/25 p-3.5 shadow-[0_0_40px_rgba(255,184,0,0.06)] bg-space-panel/90"
+        >
+          {/* Photo Container */}
+          <div className="relative aspect-square overflow-hidden rounded-xl bg-space-black border border-white/5">
+            <img
+              src="/images/rahul-rao.png"
+              alt="Rahul Rao, CFA"
+              className="h-full w-full object-cover grayscale brightness-95 contrast-[1.02]"
+            />
+          </div>
+          
+          {/* Card Footer labels */}
+          <div className="mt-3 flex items-center justify-between px-1">
+            <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-accent-gold">
+              PRESENTER ID: RR-CFA
+            </span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-white/30">
+              FIRST PRINCIPLES
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Bio details */}
+        <div className="flex flex-col text-left">
+          {/* Speaker tag */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center gap-2"
+          >
+            <span className="h-1.5 w-1.5 rounded bg-accent-gold" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-accent-gold font-bold">
+              YOUR SPEAKER
+            </span>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 12 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-5xl"
+          >
+            Rahul Rao, CFA
+          </motion.h2>
+
+          {/* Subtitles / Roles */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="mt-2.5 flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-wider text-accent-gold font-medium"
+          >
+            <span>Investor</span>
+            <span className="text-white/20 px-1 font-sans">|</span>
+            <span>CFA Charterholder</span>
+            <span className="text-white/20 px-1 font-sans">|</span>
+            <span>Accidental Teacher</span>
+          </motion.div>
+
+          {/* Thin Divider */}
+          <motion.hr
+            initial={{ scaleX: 0 }}
+            animate={active ? { scaleX: 1 } : { scaleX: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            className="my-5 border-t border-white/10 origin-left"
+          />
+
+          {/* Bullet list */}
+          <ul className="space-y-3.5">
+            {[
+              "12 years of active market experience",
+              "Aerospace Engineering (UK), began investing at 22",
+              "Weekly Contributor at The Indian Express / Financial Express",
+              "Helped found Family office of a 50-year old conglomerate",
+              "Focus: Value based, first-principles frameworks. Nothing Else."
+            ].map((item, idx) => (
+              <motion.li
+                key={idx}
+                initial={{ opacity: 0, x: -12 }}
+                animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
+                transition={{ duration: 0.5, delay: 0.5 + idx * 0.1, ease: "easeOut" }}
+                className="flex items-start gap-3.5 text-xs md:text-sm leading-relaxed text-white/70"
+              >
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent-gold" />
+                <span>{item}</span>
+              </motion.li>
+            ))}
+          </ul>
+
+          {/* Quote block */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.7, delay: 1.1 }}
+            className="mt-8 border-l-2 border-emerald-500 pl-4 py-0.5"
+          >
+            <p className="text-sm md:text-base font-semibold italic text-emerald-400">
+              &ldquo;An idea can change your life, a perspective can change your portfolio.&rdquo;
+            </p>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
