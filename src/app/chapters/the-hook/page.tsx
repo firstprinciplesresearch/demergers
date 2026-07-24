@@ -78,16 +78,6 @@ export default function TheHookChapter() {
       render: (active) => <StrategicFocusScene active={active} controller={controller} />,
     },
     {
-      id: "regulatory",
-      name: "Regulatory Catalyst",
-      render: (active) => <RegulatoryScene active={active} controller={controller} />,
-    },
-    {
-      id: "family",
-      name: "Family Settlement",
-      render: (active) => <FamilySettlementScene active={active} controller={controller} />,
-    },
-    {
       id: "stock",
       name: "Underperformance",
       render: (active) => <UnderperformanceScene active={active} controller={controller} />,
@@ -1285,7 +1275,7 @@ function FamilySettlementScene({ active, controller }: { active: boolean; contro
 
   const [familyPos, setFamilyPos] = useState(0);
 
-  const familyScroll = useTransform(progress, [seg * 10, seg * 11], [0, 100]);
+  const familyScroll = useTransform(progress, [seg * 9, seg * 10], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -1376,7 +1366,7 @@ function UnderperformanceScene({ active, controller }: { active: boolean; contro
 
   const [chartPos, setChartPos] = useState(0);
 
-  const chartScroll = useTransform(progress, [seg * 11, seg * 12], [0, 100]);
+  const chartScroll = useTransform(progress, [seg * 9, seg * 10], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
