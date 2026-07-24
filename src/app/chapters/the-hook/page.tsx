@@ -97,8 +97,7 @@ function OpeningScene({ active, controller }: { active: boolean; controller: any
   const seg = 1 / totalFrames;
 
   // Fade phrases in independently
-  const firstPhraseWords = "If a company is already successful...".split(" ");
-  const secondPhraseWords = "why would it willingly split itself into two?".split(" ");
+  const phraseWords = "Why would companies demerger?".split(" ");
 
   const textOpacity = useTransform(progress, [0, seg * 0.8], [1, 0.25]);
 
@@ -122,40 +121,26 @@ function OpeningScene({ active, controller }: { active: boolean; controller: any
         </svg>
       </div>
 
-      <motion.div style={{ opacity: textOpacity }} className="relative z-10 select-none max-w-3xl">
+      <motion.div style={{ opacity: textOpacity }} className="relative z-10 select-none max-w-4xl">
         <div className="mb-6 flex justify-center">
           <Kicker>Chapter 01 / The Catalyst</Kicker>
         </div>
 
-        <h1 className="text-balance text-3xl font-black uppercase leading-[1] tracking-tight sm:text-5xl md:text-6xl">
-          {firstPhraseWords.map((word, i) => (
+        <h1 className="text-balance text-4xl font-black uppercase leading-[1.1] tracking-tight sm:text-6xl md:text-7xl">
+          {phraseWords.map((word, i) => (
             <motion.span
               key={i}
-              initial={{ opacity: 0, filter: "blur(4px)" }}
-              animate={active ? { opacity: 1, filter: "blur(0px)" } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-              className="inline-block mr-2 text-white/60"
+              initial={{ opacity: 0, y: 12, filter: "blur(4px)" }}
+              animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+              transition={{ duration: 0.7, delay: i * 0.12, ease: "easeOut" }}
+              className={cn(
+                "inline-block mr-3",
+                word.toLowerCase().includes("demerger") ? "text-gradient-gold" : "text-white"
+              )}
             >
               {word}
             </motion.span>
           ))}
-          <br />
-          <span className="mt-4 block">
-            {secondPhraseWords.map((word, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-                animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-                transition={{ duration: 0.8, delay: 1.2 + i * 0.1, ease: "easeOut" }}
-                className={cn(
-                  "inline-block mr-2",
-                  (word.includes("split") || word.includes("willingly")) ? "text-gradient-gold" : "text-white"
-                )}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </span>
         </h1>
       </motion.div>
     </div>
