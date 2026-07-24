@@ -41,11 +41,6 @@ export default function ModuleZeroPresentation() {
       render: (active) => <HeroQuoteScene active={active} controller={controller} />,
     },
     {
-      id: "ocean",
-      name: "The Ocean",
-      render: (active) => <AnimatedOceanScene active={active} controller={controller} />,
-    },
-    {
       id: "chart",
       name: "The Evidence",
       render: (active) => <PerformanceChartScene active={active} controller={controller} />,
@@ -470,7 +465,7 @@ function PerformanceChartScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
-  const index = 5;
+  const index = 4;
 
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
