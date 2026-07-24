@@ -53,6 +53,16 @@ export default function TheHookChapter() {
       render: (active) => <RegulatoryRecharacterisationScene active={active} controller={controller} />,
     },
     {
+      id: "global-parent",
+      name: "Global Parent Restructuring",
+      render: (active) => <GlobalParentRestructuringScene active={active} controller={controller} />,
+    },
+    {
+      id: "family-settlement-new",
+      name: "Family Settlement",
+      render: (active) => <FamilySettlementNewScene active={active} controller={controller} />,
+    },
+    {
       id: "hidden",
       name: "Hidden Inside",
       render: (active) => <HiddenBusinessScene active={active} controller={controller} />,
@@ -471,6 +481,200 @@ function RegulatoryRecharacterisationScene({ active, controller }: { active: boo
 }
 
 /* ==========================================================================
+   SCENE 2.8: GLOBAL PARENT RESTRUCTURING (Thesis card and transaction reveal)
+   ========================================================================== */
+function GlobalParentRestructuringScene({ active, controller }: { active: boolean; controller: any }) {
+  const [showCompanies, setShowCompanies] = useState(false);
+
+  const companies = [
+    { name: "Siemens", details: "Demerger of the energy business in India to align with Siemens Energy AG's global separation." },
+    { name: "Sanofi India", details: "Separation of consumer healthcare division to replicate the global spin-off of Platon." },
+    { name: "SKF India", details: "Local operations carve-out following global parent directives for regional simplification." },
+  ];
+
+  return (
+    <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden">
+      {/* Top Header Bar */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-4 w-full">
+        <div>
+          <span className="font-mono text-xs font-semibold text-accent-gold">04</span>
+          <h2 className="mt-1 text-2xl font-black uppercase text-white tracking-tight sm:text-3xl">
+            {showCompanies ? "Entities Restructured" : "Global parent restructuring"}
+          </h2>
+        </div>
+        
+        {/* Big visual number "3" on the right */}
+        <div className="font-mono text-5xl font-black text-accent-gold opacity-85 sm:text-6xl tracking-tighter">
+          3
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="my-auto py-6 flex items-center justify-center min-h-[260px]">
+        <AnimatePresence mode="wait">
+          {!showCompanies ? (
+            <motion.div
+              key="drivers"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="w-full max-w-xl text-center md:text-left flex flex-col gap-4 bg-[#14130f]/40 border border-white/5 rounded-2xl p-6 shadow-[0_4px_25px_rgba(0,0,0,0.5)]"
+            >
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent-gold">
+                Multinational Alignment
+              </span>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+                Mirror Global Corporate Carve-outs
+              </h3>
+              <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-medium">
+                When global parent conglomerates restructure their business units (e.g. separating power, automotive, or pharmaceuticals), their publicly-listed domestic subsidiaries follow the same blueprint. This creates clean mirror-image pure-plays for domestic market participants.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="universe"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="grid gap-4 sm:grid-cols-3 w-full"
+            >
+              {companies.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: i * 0.1 }}
+                  className="rounded-xl border border-white/5 bg-space-panel/60 p-4 shadow-[0_2px_12px_rgba(0,0,0,0.3)] hover:border-accent-gold/20 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="font-mono text-[10px] uppercase font-bold text-accent-gold">{item.name}</span>
+                  </div>
+                  <p className="text-[11px] text-white/50 leading-relaxed font-medium">
+                    {item.details}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom Button Action */}
+      <div className="flex justify-end border-t border-white/5 pt-4">
+        <button
+          onClick={() => setShowCompanies(!showCompanies)}
+          className="interactive-control flex items-center gap-2 rounded-full border border-accent-gold/40 bg-accent-gold/5 px-6 py-2.5 font-mono text-xs uppercase tracking-wider text-accent-gold hover:bg-accent-gold/15 transition-all duration-300 shadow-[0_0_15px_rgba(255,184,0,0.05)]"
+        >
+          <span>{showCompanies ? "Show Thesis" : "Next"}</span>
+          <ChevronRight size={12} className={cn("transition-transform duration-300", showCompanies && "rotate-180")} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   SCENE 2.9: FAMILY SETTLEMENT NEW (Thesis card and transaction reveal)
+   ========================================================================== */
+function FamilySettlementNewScene({ active, controller }: { active: boolean; controller: any }) {
+  const [showCompanies, setShowCompanies] = useState(false);
+
+  const companies = [
+    { name: "Lux Industries", details: "Promoter division split agreement resolving ownership and operating leadership roles." },
+    { name: "Shri Dinesh Mills", details: "Board-approved family separation of legacy holdings and plant assets." },
+  ];
+
+  return (
+    <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden">
+      {/* Top Header Bar */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-4 w-full">
+        <div>
+          <span className="font-mono text-xs font-semibold text-accent-gold">05</span>
+          <h2 className="mt-1 text-2xl font-black uppercase text-white tracking-tight sm:text-3xl">
+            {showCompanies ? "Settlements Resolved" : "Family settlement"}
+          </h2>
+        </div>
+        
+        {/* Big visual number "2" on the right */}
+        <div className="font-mono text-5xl font-black text-accent-gold opacity-85 sm:text-6xl tracking-tighter">
+          2
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="my-auto py-6 flex items-center justify-center min-h-[260px]">
+        <AnimatePresence mode="wait">
+          {!showCompanies ? (
+            <motion.div
+              key="drivers"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="w-full max-w-xl text-center md:text-left flex flex-col gap-4 bg-[#14130f]/40 border border-white/5 rounded-2xl p-6 shadow-[0_4px_25px_rgba(0,0,0,0.5)]"
+            >
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent-gold">
+                Governance Thesis
+              </span>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+                Governance & Succession Restructuring
+              </h3>
+              <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-medium">
+                Generational shifts or factional agreements in family-owned conglomerates often block fast decision making. Demerging operating divisions separates control, clears board disputes, and aligns business focus for promoter branches.
+              </p>
+              
+              {/* Extra context block from the screenshot */}
+              <div className="mt-2 rounded bg-accent-gold/5 border border-accent-gold/10 px-3 py-2 text-[10px] sm:text-xs text-accent-gold/90 font-mono text-center">
+                Both 2026 — settlement agreement filed within a day of board approval.
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="universe"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="grid gap-6 sm:grid-cols-2 w-full max-w-2xl"
+            >
+              {companies.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: i * 0.15 }}
+                  className="rounded-xl border border-white/5 bg-space-panel/60 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.3)] hover:border-accent-gold/20 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <span className="font-mono text-xs uppercase font-bold text-accent-gold">{item.name}</span>
+                  </div>
+                  <p className="text-xs text-white/50 leading-relaxed font-medium">
+                    {item.details}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom Button Action */}
+      <div className="flex justify-end border-t border-white/5 pt-4">
+        <button
+          onClick={() => setShowCompanies(!showCompanies)}
+          className="interactive-control flex items-center gap-2 rounded-full border border-accent-gold/40 bg-accent-gold/5 px-6 py-2.5 font-mono text-xs uppercase tracking-wider text-accent-gold hover:bg-accent-gold/15 transition-all duration-300 shadow-[0_0_15px_rgba(255,184,0,0.05)]"
+        >
+          <span>{showCompanies ? "Show Thesis" : "Next"}</span>
+          <ChevronRight size={12} className={cn("transition-transform duration-300", showCompanies && "rotate-180")} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
    SCENE 3: HIDDEN BUSINESS (Parent box, growth node, multiple 15x -> 35x)
    ========================================================================== */
 function HiddenBusinessScene({ active, controller }: { active: boolean; controller: any }) {
@@ -479,7 +683,7 @@ function HiddenBusinessScene({ active, controller }: { active: boolean; controll
 
   const [growthPos, setGrowthPos] = useState(0); // 0 to 100
 
-  const growthScroll = useTransform(progress, [seg * 4, seg * 5], [0, 100]);
+  const growthScroll = useTransform(progress, [seg * 6, seg * 7], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -604,7 +808,7 @@ function LossMakingScene({ active, controller }: { active: boolean; controller: 
 
   const [lossPos, setLossPos] = useState(0);
 
-  const lossScroll = useTransform(progress, [seg * 5, seg * 6], [0, 100]);
+  const lossScroll = useTransform(progress, [seg * 7, seg * 8], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -718,7 +922,7 @@ function StrategicFocusScene({ active, controller }: { active: boolean; controll
 
   const [focusPos, setFocusPos] = useState(0);
 
-  const focusScroll = useTransform(progress, [seg * 6, seg * 7], [0, 100]);
+  const focusScroll = useTransform(progress, [seg * 8, seg * 9], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -980,7 +1184,7 @@ function RegulatoryScene({ active, controller }: { active: boolean; controller: 
 
   const [regPos, setRegPos] = useState(0);
 
-  const regScroll = useTransform(progress, [seg * 7, seg * 8], [0, 100]);
+  const regScroll = useTransform(progress, [seg * 9, seg * 10], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -1081,7 +1285,7 @@ function FamilySettlementScene({ active, controller }: { active: boolean; contro
 
   const [familyPos, setFamilyPos] = useState(0);
 
-  const familyScroll = useTransform(progress, [seg * 8, seg * 9], [0, 100]);
+  const familyScroll = useTransform(progress, [seg * 10, seg * 11], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -1172,7 +1376,7 @@ function UnderperformanceScene({ active, controller }: { active: boolean; contro
 
   const [chartPos, setChartPos] = useState(0);
 
-  const chartScroll = useTransform(progress, [seg * 9, seg * 10], [0, 100]);
+  const chartScroll = useTransform(progress, [seg * 11, seg * 12], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
