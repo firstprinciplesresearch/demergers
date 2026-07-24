@@ -58,11 +58,6 @@ export default function TheHookChapter() {
       render: (active) => <StrategicFocusScene active={active} controller={controller} />,
     },
     {
-      id: "investors",
-      name: "Different Investors",
-      render: (active) => <DifferentInvestorsScene active={active} controller={controller} />,
-    },
-    {
       id: "regulatory",
       name: "Regulatory Catalyst",
       render: (active) => <RegulatoryScene active={active} controller={controller} />,
@@ -768,7 +763,7 @@ function RegulatoryScene({ active, controller }: { active: boolean; controller: 
 
   const [regPos, setRegPos] = useState(0);
 
-  const regScroll = useTransform(progress, [seg * 6, seg * 7], [0, 100]);
+  const regScroll = useTransform(progress, [seg * 5, seg * 6], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -869,7 +864,7 @@ function FamilySettlementScene({ active, controller }: { active: boolean; contro
 
   const [familyPos, setFamilyPos] = useState(0);
 
-  const familyScroll = useTransform(progress, [seg * 7, seg * 8], [0, 100]);
+  const familyScroll = useTransform(progress, [seg * 6, seg * 7], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
@@ -960,7 +955,7 @@ function UnderperformanceScene({ active, controller }: { active: boolean; contro
 
   const [chartPos, setChartPos] = useState(0);
 
-  const chartScroll = useTransform(progress, [seg * 8, seg * 9], [0, 100]);
+  const chartScroll = useTransform(progress, [seg * 7, seg * 8], [0, 100]);
 
   useEffect(() => {
     if (presentationActive) return;
