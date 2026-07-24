@@ -11,6 +11,7 @@ import {
   TrendingUp,
   CheckCircle,
   Clock,
+  BarChart,
 } from "lucide-react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -551,18 +552,7 @@ function AnimatedOceanScene({
       </AnimatePresence>
     </div>
   );
-}
-
-/* ==========================================================================
-   SCENE 3: SPIN-OFF PERFORMANCE CHART (SVG Line Chart, S&P 500 vs Spin-off)
-   ========================================================================== */
-interface ChartPoint {
-  year: number;
-  sp500: number;
-  spinoff: number;
-}
-
-function PerformanceChartScene({
+}function PerformanceChartScene({
   active,
   controller,
 }: {
@@ -573,287 +563,159 @@ function PerformanceChartScene({
   const seg = 1 / totalFrames;
   const index = 4;
 
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-
-  // Performance data (normalized from 100 index base)
-  const data: ChartPoint[] = useMemo(
-    () => [
-      { year: 2016, sp500: 100, spinoff: 100 },
-      { year: 2017, sp500: 121, spinoff: 132 },
-      { year: 2018, sp500: 114, spinoff: 139 },
-      { year: 2019, sp500: 147, spinoff: 184 },
-      { year: 2020, sp500: 174, spinoff: 218 },
-      { year: 2021, sp500: 221, spinoff: 285 },
-      { year: 2022, sp500: 181, spinoff: 248 },
-      { year: 2023, sp500: 228, spinoff: 334 },
-      { year: 2024, sp500: 282, spinoff: 418 },
-      { year: 2025, sp500: 312, spinoff: 462 },
-      { year: 2026, sp500: 345, spinoff: 524 },
-    ],
-    [],
-  );
-
-  // Map scroll progress to chart draw (clip path width)
-  const clipWidthScroll = useTransform(
-    progress,
-    [seg * index, seg * (index + 1)],
-    [0, 100],
-  );
-  const [clipWidthPres, setClipWidthPres] = useState(0);
-
-  useEffect(() => {
-    if (presentationActive) return;
-    const unsubscribe = clipWidthScroll.on("change", (v) => {
-      setClipWidthPres(v);
-    });
-    return () => unsubscribe();
-  }, [clipWidthScroll, presentationActive]);
-
-  useGSAP(() => {
-    if (!presentationActive || !active) {
-      if (presentationActive) setClipWidthPres(0);
-      return;
-    }
-    gsap.fromTo(
-      { val: 0 },
-      { val: 100 },
-      {
-        val: 100,
-        duration: 2.5,
-        ease: "power2.out",
-        onUpdate: function () {
-          setClipWidthPres(this.targets()[0].val);
-        },
-      },
-    );
-  }, [presentationActive, active]);
-
-  // Chart dimensions & scaling
-  const width = 640;
-  const height = 280;
-  const paddingX = 45;
-  const paddingY = 30;
-
-  const minVal = 80;
-  const maxVal = 560;
-
-  const getX = (index: number) =>
-    paddingX + (index / (data.length - 1)) * (width - paddingX * 2);
-  const getY = (val: number) =>
-    height -
-    paddingY -
-    ((val - minVal) / (maxVal - minVal)) * (height - paddingY * 2);
-
-  // Generate SVG path strings
-  const sp500Path = useMemo(() => {
-    return data
-      .map((d, i) => `${i === 0 ? "M" : "L"} ${getX(i)} ${getY(d.sp500)}`)
-      .join(" ");
-  }, [data]);
-
-  const spinoffPath = useMemo(() => {
-    return data
-      .map((d, i) => `${i === 0 ? "M" : "L"} ${getX(i)} ${getY(d.spinoff)}`)
-      .join(" ");
-  }, [data]);
-
-  // Track hover coordinate
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clientX = e.clientX - rect.left;
-    const chartWidth = rect.width;
-
-    // Convert clientX to relative coordinates matching SVG viewBox (width: 640)
-    const relativeX = (clientX / chartWidth) * width;
-
-    // Find nearest data index
-    const segmentWidth = (width - paddingX * 2) / (data.length - 1);
-    const index = Math.round((relativeX - paddingX) / segmentWidth);
-    if (index >= 0 && index < data.length) {
-      setHoverIndex(index);
-    }
-  };
-
-  const currentHoverPoint = hoverIndex !== null ? data[hoverIndex] : null;
+  const [activeTab, setActiveTab] = useState<"trend" | "distribution">("trend");
 
   return (
-    <div className="grid gap-6 md:grid-cols-[1fr_320px] md:items-center">
-      <div>
+    <div className="grid gap-6 md:grid-cols-[1fr_1.3fr] md:items-center w-full">
+      {/* Left Column: Title, Description, and Tab Selectors */}
+      <div className="flex flex-col justify-center">
         <SceneHeader
           kicker="The Performance Evidence"
-          title="Invesco S&P Spin-off Index"
-          lede="Corporate spin-offs historically create massive outperformance compared to broader markets. The index tracks US spin-offs over a rolling 10-year window."
+          title="Invesco S&P Spin-off ETF"
+          lede="Historical performance records prove corporate demergers command structural alpha over traditional equity indexes."
         />
 
-        <div className="mt-8 flex gap-8">
-          <div>
-            <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
-              Invesco Spin-off
+        {/* Tab Buttons */}
+        <div className="mt-6 flex flex-col gap-2.5 sm:flex-row md:flex-col">
+          <button
+            onClick={() => setActiveTab("trend")}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-xl border font-mono text-xs uppercase tracking-wider text-left transition-all duration-300",
+              activeTab === "trend"
+                ? "bg-accent-gold/10 border-accent-gold text-accent-gold shadow-[0_0_15px_rgba(255,184,0,0.1)]"
+                : "bg-white/5 border-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+            )}
+          >
+            <TrendingUp size={14} className={activeTab === "trend" ? "text-accent-gold" : "text-white/40"} />
+            <div className="flex flex-col">
+              <span className="font-bold">10Y Growth Trend</span>
+              <span className="text-[9px] lowercase text-white/30 font-normal">Invesco ETF vs Russell Midcap & S&P</span>
             </div>
-            <div className="mt-1 font-mono text-3xl font-black text-accent-gold">
-              <AnimatedCounter value={524} active={active} suffix="%" />
+          </button>
+
+          <button
+            onClick={() => setActiveTab("distribution")}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-xl border font-mono text-xs uppercase tracking-wider text-left transition-all duration-300",
+              activeTab === "distribution"
+                ? "bg-accent-gold/10 border-accent-gold text-accent-gold shadow-[0_0_15px_rgba(255,184,0,0.1)]"
+                : "bg-white/5 border-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+            )}
+          >
+            <BarChart size={14} className={activeTab === "distribution" ? "text-accent-gold" : "text-white/40"} />
+            <div className="flex flex-col">
+              <span className="font-bold">Return Distribution</span>
+              <span className="text-[9px] lowercase text-white/30 font-normal">Fund NAV vs Benchmarks by period</span>
             </div>
-            <div className="font-mono text-[9px] uppercase text-white/30">
-              Total 10Y Growth
-            </div>
-          </div>
-          <div className="border-l border-white/10 pl-6">
-            <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
-              S&P 500 Index
-            </div>
-            <div className="mt-1 font-mono text-3xl font-black text-white/60">
-              <AnimatedCounter value={345} active={active} suffix="%" />
-            </div>
-            <div className="font-mono text-[9px] uppercase text-white/30">
-              Total 10Y Growth
-            </div>
-          </div>
+          </button>
+        </div>
+
+        {/* Dynamic Metric Display based on active tab */}
+        <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/5 pt-6">
+          {activeTab === "trend" ? (
+            <>
+              <div>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                  Spin-off ETF Growth
+                </span>
+                <div className="mt-1 font-mono text-2xl font-black text-accent-gold">
+                  <AnimatedCounter value={40} active={active} prefix="+$" suffix="k" />
+                </div>
+                <span className="font-mono text-[8px] text-white/30">
+                  On $10k initial in 2017
+                </span>
+              </div>
+              <div className="border-l border-white/10 pl-4">
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                  Russell Midcap
+                </span>
+                <div className="mt-1 font-mono text-2xl font-black text-white/60">
+                  <AnimatedCounter value={30} active={active} prefix="+$" suffix="k" />
+                </div>
+                <span className="font-mono text-[8px] text-white/30">
+                  Underperformed by ~$10k
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                  1Y Outperformance
+                </span>
+                <div className="mt-1 font-mono text-2xl font-black text-accent-gold">
+                  <AnimatedCounter value={79.1} active={active} decimals={1} prefix="+" suffix="%" />
+                </div>
+                <span className="font-mono text-[8px] text-white/30">
+                  Fund NAV 1Y Gain
+                </span>
+              </div>
+              <div className="border-l border-white/10 pl-4">
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                  3Y Outperformance
+                </span>
+                <div className="mt-1 font-mono text-2xl font-black text-accent-gold">
+                  <AnimatedCounter value={38.8} active={active} decimals={1} prefix="+" suffix="%" />
+                </div>
+                <span className="font-mono text-[8px] text-white/30">
+                  Fund NAV 3Y Gain
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Interactive SVG Chart */}
-      <div className="relative rounded-xl border border-white/5 bg-space-panel p-4 shadow-xl">
-        <div className="mb-4 flex items-center justify-between border-b border-white/5 pb-2">
+      {/* Right Column: Chart Viewport */}
+      <div className="relative rounded-xl border border-white/10 bg-[#020206] p-4 shadow-2xl overflow-hidden aspect-[16/9] flex items-center justify-center">
+        {/* Table header bar */}
+        <div className="absolute top-3 left-4 right-4 flex items-center justify-between border-b border-white/5 pb-2 z-10">
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-gold animate-pulse" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/80">
-              INVS-SP-INDEX vs SPY
+            <span className="font-mono text-[9px] uppercase tracking-wider text-white/80">
+              {activeTab === "trend" ? "CUMULATIVE GROWTH OVER 10 YEARS" : "RETURNS BY PERIOD (YTD / 1Y / 3Y / 5Y / 10Y)"}
             </span>
           </div>
-          <span className="font-mono text-[8px] uppercase text-white/40">
-            10Y Return Data (USD)
+          <span className="font-mono text-[8px] text-white/40">
+            SOURCE: INVESCO ETF DATABASE
           </span>
         </div>
 
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="h-full w-full select-none overflow-visible"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setHoverIndex(null)}
-        >
-          {/* Horizontal grid lines */}
-          {[100, 200, 300, 400, 500].map((gridVal) => (
-            <g key={gridVal} className="opacity-10">
-              <line
-                x1={paddingX}
-                y1={getY(gridVal)}
-                x2={width - paddingX}
-                y2={getY(gridVal)}
-                stroke="#fff"
-                strokeDasharray="3 3"
-              />
-              <text
-                x={paddingX - 8}
-                y={getY(gridVal) + 3}
-                textAnchor="end"
-                className="fill-white font-mono text-[9px]"
+        {/* Tab contents with smooth crossfade */}
+        <div className="w-full h-full pt-8 flex items-center justify-center relative">
+          <AnimatePresence mode="wait">
+            {activeTab === "trend" ? (
+              <motion.div
+                key="trend"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                className="w-full h-full flex items-center justify-center"
               >
-                {gridVal}%
-              </text>
-            </g>
-          ))}
-
-          {/* X Axis Labels */}
-          {data.map(
-            (d, i) =>
-              i % 2 === 0 && (
-                <text
-                  key={d.year}
-                  x={getX(i)}
-                  y={height - 8}
-                  textAnchor="middle"
-                  className="fill-white/30 font-mono text-[9px]"
-                >
-                  {d.year}
-                </text>
-              ),
-          )}
-
-          {/* Render lines clipping reveal */}
-          <clipPath id="chart-reveal-clip">
-            <rect
-              x="0"
-              y="0"
-              width={(clipWidthPres / 100) * width}
-              height={height}
-            />
-          </clipPath>
-
-          <g clipPath="url(#chart-reveal-clip)">
-            {/* S&P 500 Path */}
-            <path
-              d={sp500Path}
-              fill="none"
-              stroke="rgba(255,255,255,0.3)"
-              strokeWidth="1.5"
-            />
-            {/* Spin-off Index Path */}
-            <path
-              d={spinoffPath}
-              fill="none"
-              stroke="var(--color-accent-gold)"
-              strokeWidth="2.5"
-            />
-          </g>
-
-          {/* Interactive Hover Line and Tooltip */}
-          {currentHoverPoint && hoverIndex !== null && (
-            <>
-              <line
-                x1={getX(hoverIndex)}
-                y1={paddingY}
-                x2={getX(hoverIndex)}
-                y2={height - paddingY}
-                stroke="rgba(255,255,255,0.2)"
-                strokeDasharray="2 2"
-              />
-              {/* Highlight Nodes */}
-              <circle
-                cx={getX(hoverIndex)}
-                cy={getY(currentHoverPoint.sp500)}
-                r="4"
-                fill="rgba(255,255,255,0.6)"
-                stroke="#0a0a14"
-                strokeWidth="1.5"
-              />
-              <circle
-                cx={getX(hoverIndex)}
-                cy={getY(currentHoverPoint.spinoff)}
-                r="5"
-                fill="var(--color-accent-gold)"
-                stroke="#0a0a14"
-                strokeWidth="1.5"
-              />
-            </>
-          )}
-        </svg>
-
-        {/* Floating Tooltip overlay */}
-        {currentHoverPoint && (
-          <div className="glass pointer-events-none absolute right-4 top-16 flex flex-col gap-1 rounded-lg p-2.5 font-mono text-[10px] text-white animate-fade-in">
-            <div className="border-b border-white/10 pb-1 text-white/50">
-              {currentHoverPoint.year} Snapshot
-            </div>
-            <div className="flex justify-between gap-4">
-              <span>Spin-off Index:</span>
-              <span className="font-bold text-accent-gold">
-                {currentHoverPoint.spinoff}%
-              </span>
-            </div>
-            <div className="flex justify-between gap-4">
-              <span>S&P 500 Index:</span>
-              <span className="font-bold text-white/70">
-                {currentHoverPoint.sp500}%
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div className="mt-4 text-center">
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
-            &quot;Over long periods, spin-offs have consistently outperformed
-            broader markets.&quot;
-          </p>
+                <img
+                  src="/images/invesco-line-chart.png"
+                  alt="Invesco S&P Spin-Off ETF line chart"
+                  className="w-full h-auto max-h-[85%] object-contain rounded-lg filter invert-[0.93] hue-rotate-[180deg] brightness-[1.05] contrast-[1.05] shadow-[0_0_30px_rgba(0,0,0,0.4)]"
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="distribution"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                className="w-full h-full flex items-center justify-center"
+              >
+                <img
+                  src="/images/invesco-bar-chart.png"
+                  alt="Invesco S&P Spin-Off ETF bar chart"
+                  className="w-full h-auto max-h-[85%] object-contain rounded-lg filter invert-[0.93] hue-rotate-[180deg] brightness-[1.05] contrast-[1.05] shadow-[0_0_30px_rgba(0,0,0,0.4)]"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
