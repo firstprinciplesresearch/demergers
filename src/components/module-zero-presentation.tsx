@@ -95,13 +95,28 @@ function HeroQuoteScene({
   const quoteY = useTransform(progress, [seg * index, seg * (index + 1)], ["0vh", "-38vh"]);
   const quoteOpacity = useTransform(progress, [seg * index, seg * index + seg * 0.9, seg * (index + 1)], [1, 1, 0.25]);
 
+  // Image scroll fade out: fades out quickly as soon as scrolling starts
+  const imgOpacityScroll = useTransform(
+    progress,
+    [seg * index, seg * index + seg * 0.45],
+    [1, 0]
+  );
+  const imgScaleScroll = useTransform(
+    progress,
+    [seg * index, seg * (index + 1)],
+    [1, 0.92]
+  );
+
   const scale = presentationActive ? 1 : quoteScale;
   const x = presentationActive ? "0%" : quoteX;
   const y = presentationActive ? "0vh" : quoteY;
   const opacity = presentationActive ? 1 : quoteOpacity;
 
+  const imgOpacity = presentationActive ? (active ? 0.35 : 0) : imgOpacityScroll;
+  const imgScale = presentationActive ? 1 : imgScaleScroll;
+
   return (
-    <div className="relative flex min-h-[70vh] flex-col items-center justify-center text-center">
+    <div className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
       {/* Background zoom layer */}
       <motion.div
         initial={{ scale: 1, opacity: 0.25 }}
@@ -110,6 +125,28 @@ function HeroQuoteScene({
         className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
       />
 
+      {/* Styled Portrait of Charlie Munger in the background/right */}
+      <motion.div
+        style={{
+          opacity: imgOpacity,
+          scale: imgScale,
+        }}
+        className="absolute right-0 top-1/2 -translate-y-1/2 w-full max-w-[280px] sm:max-w-[360px] md:max-w-[440px] aspect-[4/5] pointer-events-none select-none z-0 overflow-hidden rounded-2xl border border-white/5 bg-[#030308] shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+      >
+        <div className="relative w-full h-full">
+          <img
+            src="/images/charlie-munger.jpg"
+            alt="Charlie Munger"
+            className="w-full h-full object-cover grayscale opacity-45 brightness-75 contrast-125 scale-105 origin-center"
+          />
+          {/* Subtle gradient feathering to blend into dark page */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#030308]/70 to-[#030308]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030308] via-transparent to-[#030308]" />
+          <div className="absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent opacity-85" />
+        </div>
+      </motion.div>
+
+      {/* Quote text overlay */}
       <motion.div
         style={{
           scale,
@@ -118,7 +155,7 @@ function HeroQuoteScene({
           opacity,
           transformOrigin: "center center",
         }}
-        className="relative z-10 select-none"
+        className="relative z-10 select-none text-center max-w-4xl"
       >
         <div className="mb-4 flex justify-center">
           <Kicker>Chapter 00 / Introduction</Kicker>
@@ -163,7 +200,7 @@ function HeroQuoteScene({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 0.3, y: 0 }}
           transition={{ delay: 2, duration: 1 }}
-          className="pointer-events-none absolute bottom-4 flex flex-col items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em]"
+          className="pointer-events-none absolute bottom-4 flex flex-col items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-white/40"
         >
           <span>Scroll to begin the thesis</span>
           <ArrowDown size={10} className="animate-bounce" />
