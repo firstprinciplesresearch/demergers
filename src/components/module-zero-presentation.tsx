@@ -21,9 +21,19 @@ if (typeof window !== "undefined") {
 export default function ModuleZeroPresentation() {
   const scenes: DeckScene[] = [
     {
+      id: "hero",
+      name: "The Introduction",
+      render: (active) => <CinematicHeroScene active={active} controller={controller} />,
+    },
+    {
       id: "presenter",
       name: "The Presenter",
       render: (active) => <PresenterProfileScene active={active} controller={controller} />,
+    },
+    {
+      id: "disclaimer",
+      name: "Disclaimer",
+      render: (active) => <DisclaimerScene active={active} controller={controller} />,
     },
     {
       id: "quote",
@@ -74,7 +84,7 @@ function HeroQuoteScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
-  const index = 1;
+  const index = 3;
 
   // Word-by-word quote data
   const quoteWords = "Fish where the fish are.".split(" ");
@@ -185,7 +195,7 @@ function AnimatedOceanScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
-  const index = 2;
+  const index = 4;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const boatRef = useRef<HTMLDivElement>(null);
@@ -417,7 +427,7 @@ function PerformanceChartScene({
 }) {
   const { progress, presentationActive, totalFrames } = controller;
   const seg = 1 / totalFrames;
-  const index = 3;
+  const index = 5;
 
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
@@ -1172,6 +1182,525 @@ function PresenterProfileScene({
           </motion.div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   SCENE -1: CINEMATIC HERO (Masterclass landing hero)
+   ========================================================================== */
+function CinematicHeroScene({
+  active,
+  controller,
+}: {
+  active: boolean;
+  controller: any;
+}) {
+  const { presentationActive, nextSlide, goToFrame } = controller;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleCTA = () => {
+    if (presentationActive) {
+      nextSlide();
+    } else {
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleSecondaryCTA = () => {
+    if (presentationActive) {
+      goToFrame(7); // Jump to Tracker
+    } else {
+      window.scrollTo({
+        top: window.innerHeight * 7,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const tickerItems = [
+    { name: "REL-STUB", val: "+4.8%", up: true },
+    { name: "JIO-FIN", val: "+8.4%", up: true },
+    { name: "TATA-MOTORS", val: "+3.2%", up: true },
+    { name: "TATA-TECH", val: "+12.6%", up: true },
+    { name: "ITC-HOTELS", val: "-1.8%", up: false },
+    { name: "RAYMOND-LIFESTYLE", val: "+7.8%", up: true },
+    { name: "WIPRO-ENT", val: "+2.5%", up: true },
+    { name: "IDFC-FIRST", val: "+6.2%", up: true },
+  ];
+
+  const titleWords = "Deep Dive into Demergers".split(" ");
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative w-full text-center flex flex-col items-center justify-center min-h-[80vh] overflow-hidden rounded-2xl border border-white/5 bg-space-dark"
+    >
+      {/* Background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#030308] via-[#070718]/40 to-[#030308] opacity-95 pointer-events-none" />
+
+      {/* Mouse cursor glowing spotlight */}
+      <div
+        className="absolute pointer-events-none rounded-full blur-[140px] bg-accent-gold/8 w-[350px] h-[350px] -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ease-out z-10"
+        style={{
+          left: `${mousePos.x}px`,
+          top: `${mousePos.y}px`,
+        }}
+      />
+
+      {/* Live stock ticker */}
+      <div className="absolute top-2 left-0 right-0 overflow-hidden py-1.5 border-y border-white/5 bg-space-black/60 backdrop-blur-md z-20">
+        <motion.div
+          className="flex gap-16 whitespace-nowrap"
+          animate={{ x: [0, -1200] }}
+          transition={{ ease: "linear", duration: 32, repeat: Infinity }}
+        >
+          {[...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (
+            <span key={i} className="flex items-center gap-2 font-mono text-[9px]">
+              <span className="text-white/40">{item.name}</span>
+              <span className={item.up ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
+                {item.val}
+              </span>
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Floating background valuation metrics */}
+      <motion.div
+        className="absolute glass px-2.5 py-1.5 rounded-lg border-white/5 font-mono text-[9px] text-white/30 hidden md:block z-0 select-none"
+        style={{ top: "22%", left: "8%" }}
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        P/E Ratio: 14.2x
+      </motion.div>
+      <motion.div
+        className="absolute glass px-2.5 py-1.5 rounded-lg border-white/5 font-mono text-[9px] text-white/30 hidden md:block z-0 select-none"
+        style={{ top: "32%", right: "8%" }}
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      >
+        EV/EBITDA: 8.5x
+      </motion.div>
+      <motion.div
+        className="absolute glass px-2.5 py-1.5 rounded-lg border-white/5 font-mono text-[9px] text-white/30 hidden md:block z-0 select-none"
+        style={{ bottom: "24%", left: "12%" }}
+        animate={{ y: [0, -12, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      >
+        ROCE: 24.8%
+      </motion.div>
+      <motion.div
+        className="absolute glass px-2.5 py-1.5 rounded-lg border-white/5 font-mono text-[9px] text-white/30 hidden md:block z-0 select-none"
+        style={{ bottom: "28%", right: "14%" }}
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      >
+        Ratio: 1:1 Spin-off
+      </motion.div>
+
+      {/* Main Grid Layout */}
+      <div className="relative z-10 w-full max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:gap-14 items-center">
+        {/* Left Side: Copy and Actions */}
+        <div className="flex flex-col text-left">
+          {/* Chapter header kicker */}
+          <div className="mb-4">
+            <span className="font-mono text-[9px] uppercase tracking-[0.32em] text-accent-gold font-bold">
+              Special Situations Masterclass
+            </span>
+          </div>
+
+          {/* Word Staggered Reveal Title */}
+          <h1 className="text-balance text-4xl font-black uppercase leading-[0.95] tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+            {titleWords.map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
+                animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 14, filter: "blur(4px)" }}
+                transition={{
+                  duration: 0.8,
+                  delay: i * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={cn(
+                  "inline-block mr-3",
+                  word.toLowerCase() === "demergers" && "text-gradient-gold"
+                )}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 0.7, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="mt-6 text-sm leading-relaxed text-white/90 sm:text-base"
+          >
+            Understand why companies split, how value is created or destroyed, how to analyse every stage of a demerger, and how to identify opportunities before the market fully prices them in.
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="mt-8 flex flex-wrap gap-4"
+          >
+            <button
+              onClick={handleCTA}
+              className="interactive-control bg-accent-gold hover:bg-accent-gold/90 text-black flex items-center gap-2 rounded-full px-6 py-3 text-xs font-bold tracking-wide shadow-2xl cursor-pointer"
+            >
+              Explore the Masterclass
+              <ArrowRight size={14} />
+            </button>
+            <button
+              onClick={handleSecondaryCTA}
+              className="interactive-control border border-white/10 hover:border-white/20 text-white bg-white/5 flex items-center gap-2 rounded-full px-6 py-3 text-xs font-semibold tracking-wide cursor-pointer"
+            >
+              View Curriculum
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Right Side: Splitting Corporate Network Animation */}
+        <div className="flex items-center justify-center relative min-h-[280px]">
+          <svg viewBox="0 0 400 400" className="w-full max-w-[320px] select-none overflow-visible">
+            {/* Ambient blur behind the network */}
+            <circle cx="200" cy="200" r="80" className="fill-accent-gold/5 blur-[40px] pointer-events-none" />
+
+            {/* Connecting lines from parent to spin-offs */}
+            {active && (
+              <>
+                <motion.line
+                  x1="200"
+                  y1="110"
+                  x2="120"
+                  y2="280"
+                  stroke="rgba(255, 184, 0, 0.2)"
+                  strokeWidth="1.5"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                />
+                <motion.line
+                  x1="200"
+                  y1="110"
+                  x2="280"
+                  y2="280"
+                  stroke="rgba(255, 184, 0, 0.2)"
+                  strokeWidth="1.5"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                />
+
+                {/* Flows/particles traveling from parent to spin-offs */}
+                <motion.circle
+                  r="3.5"
+                  fill="var(--color-accent-gold)"
+                  className="shadow-lg"
+                  animate={{
+                    cx: [200, 120],
+                    cy: [110, 280],
+                    opacity: [0, 1, 1, 0],
+                  }}
+                  transition={{
+                    duration: 2.4,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: 0.2,
+                  }}
+                />
+                <motion.circle
+                  r="3.5"
+                  fill="var(--color-accent-gold)"
+                  className="shadow-lg"
+                  animate={{
+                    cx: [200, 280],
+                    cy: [110, 280],
+                    opacity: [0, 1, 1, 0],
+                  }}
+                  transition={{
+                    duration: 2.4,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: 1.4,
+                  }}
+                />
+              </>
+            )}
+
+            {/* Orbit rings around parent */}
+            <motion.circle
+              cx="200"
+              cy="110"
+              r="48"
+              stroke="rgba(255, 184, 0, 0.12)"
+              strokeWidth="0.8"
+              strokeDasharray="4 4"
+              fill="none"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.circle
+              cx="200"
+              cy="110"
+              r="26"
+              stroke="rgba(255, 184, 0, 0.18)"
+              strokeWidth="0.8"
+              strokeDasharray="2 2"
+              fill="none"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            />
+
+            {/* Parent Node */}
+            <motion.g
+              initial={{ scale: 0, opacity: 0 }}
+              animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+              transition={{ type: "spring", damping: 15, delay: 0.1 }}
+            >
+              <circle cx="200" cy="110" r="20" className="fill-space-panel stroke-accent-gold stroke-2 shadow-2xl" />
+              <circle cx="200" cy="110" r="14" className="fill-accent-gold/10" />
+              <text x="200" y="113" textAnchor="middle" className="fill-white font-mono text-[7px] font-black uppercase tracking-wider">
+                PARENT
+              </text>
+            </motion.g>
+
+            {/* Spin-off A Node */}
+            <motion.g
+              initial={{ scale: 0, opacity: 0 }}
+              animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+              transition={{ type: "spring", damping: 15, delay: 0.6 }}
+            >
+              <circle cx="120" cy="280" r="18" className="fill-space-panel stroke-accent-gold/60 stroke-2" />
+              <circle cx="120" cy="280" r="12" className="fill-accent-gold/5" />
+              <text x="120" y="283" textAnchor="middle" className="fill-accent-gold font-mono text-[6.5px] font-bold tracking-wider">
+                SPIN-A
+              </text>
+            </motion.g>
+
+            {/* Spin-off B Node */}
+            <motion.g
+              initial={{ scale: 0, opacity: 0 }}
+              animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+              transition={{ type: "spring", damping: 15, delay: 0.8 }}
+            >
+              <circle cx="280" cy="280" r="18" className="fill-space-panel stroke-accent-gold/60 stroke-2" />
+              <circle cx="280" cy="280" r="12" className="fill-accent-gold/5" />
+              <text x="280" y="283" textAnchor="middle" className="fill-accent-gold font-mono text-[6.5px] font-bold tracking-wider">
+                SPIN-B
+              </text>
+            </motion.g>
+
+            {/* Labels beneath spin-offs */}
+            {active && (
+              <>
+                <motion.text
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.4 }}
+                  transition={{ delay: 1.2 }}
+                  x="120"
+                  y="314"
+                  textAnchor="middle"
+                  className="fill-white font-mono text-[8px] uppercase tracking-wider"
+                >
+                  Value Unlock
+                </motion.text>
+                <motion.text
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.4 }}
+                  transition={{ delay: 1.4 }}
+                  x="280"
+                  y="314"
+                  textAnchor="middle"
+                  className="fill-white font-mono text-[8px] uppercase tracking-wider"
+                >
+                  Growth Core
+                </motion.text>
+              </>
+            )}
+          </svg>
+        </div>
+      </div>
+
+      {/* Floating highlight cards at the bottom */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl px-6 mt-2 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          className="glass rounded-xl p-4 border-white/5 text-left hover:border-accent-gold/25 transition-all duration-300 bg-space-panel/50 backdrop-blur-sm"
+        >
+          <span className="font-mono text-[10px] text-accent-gold font-bold tracking-wider">📈 LEARN</span>
+          <p className="mt-1 text-[11px] text-white/50 leading-relaxed">
+            Understand the complete demerger process from first principles.
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: 0.6, delay: 1.05 }}
+          className="glass rounded-xl p-4 border-white/5 text-left hover:border-accent-gold/25 transition-all duration-300 bg-space-panel/50 backdrop-blur-sm"
+        >
+          <span className="font-mono text-[10px] text-accent-gold font-bold tracking-wider">🔍 ANALYSE</span>
+          <p className="mt-1 text-[11px] text-white/50 leading-relaxed">
+            Evaluate value creation, record dates, price adjustments and hidden opportunities.
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: 0.6, delay: 1.2 }}
+          className="glass rounded-xl p-4 border-white/5 text-left hover:border-accent-gold/25 transition-all duration-300 bg-space-panel/50 backdrop-blur-sm"
+        >
+          <span className="font-mono text-[10px] text-accent-gold font-bold tracking-wider">🚀 INVEST</span>
+          <p className="mt-1 text-[11px] text-white/50 leading-relaxed">
+            Build a repeatable framework to analyse every future demerger with confidence.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      {active && !presentationActive && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 0.35, y: 0 }}
+          transition={{ delay: 2.2, duration: 1 }}
+          className="pointer-events-none absolute bottom-3 flex flex-col items-center gap-1 font-mono text-[8px] uppercase tracking-[0.2em] text-white/40"
+        >
+          <span>Scroll to Begin</span>
+          <ArrowDown size={10} className="animate-bounce" />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+/* ==========================================================================
+   SCENE 0.5: DISCLAIMER (Legal and compliance section)
+   ========================================================================== */
+function DisclaimerScene({
+  active,
+  controller,
+}: {
+  active: boolean;
+  controller: any;
+}) {
+  return (
+    <div className="relative w-full">
+      {/* Background zoom layer */}
+      <motion.div
+        initial={{ scale: 1, opacity: 0.15 }}
+        animate={active ? { scale: 1.05, opacity: 0.3 } : { scale: 1, opacity: 0.15 }}
+        transition={{ duration: 6, ease: "easeOut" }}
+        className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
+      />
+
+      <div className="relative z-10 grid gap-8 md:grid-cols-[1.2fr_1.8fr] md:gap-14 items-center">
+        {/* Left Column: Heading and Highlighted Card */}
+        <div className="flex flex-col text-left">
+          {/* Legal compliance kicker */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center gap-2"
+          >
+            <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-accent-gold font-bold">
+              00 / Legal Compliance
+            </span>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h2
+            initial={{ opacity: 0, y: 12 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-3 text-4xl font-black uppercase tracking-tight text-accent-gold md:text-5xl"
+          >
+            Disclaimer
+          </motion.h2>
+
+          {/* Position Disclosure Warning Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 rounded-xl border border-accent-gold/20 bg-space-panel/90 p-5 shadow-xl relative overflow-hidden"
+          >
+            {/* Thick left border accent */}
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-gold" />
+            
+            <div className="pl-3.5">
+              <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-accent-gold">
+                Position Disclosure
+              </span>
+              <p className="mt-2 text-xs font-semibold leading-relaxed text-accent-gold">
+                The speaker and / or associated persons may hold positions in one or more of the securities mentioned, and those positions may change at any time without notice.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right Column: Detailed Disclaimers */}
+        <div className="flex flex-col text-left text-xs leading-relaxed text-white/70 space-y-4">
+          <motion.p
+            initial={{ opacity: 0, x: 12 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            This presentation is for educational and informational purposes only and does not constitute investment advice, a research report, or a recommendation to buy, sell, or hold any security. It is not a solicitation or offer to deal in any security. The companies, sectors, and securities discussed are referenced solely to illustrate the analytical framework and themes presented; their inclusion is not a recommendation.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, x: 12 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+          >
+            All information drawn from sources believed to be reliable and from publicly available primary documents, but no representation or warranty, express or implied, is made as to its accuracy, completeness, or timeliness. Forward-looking statements and management guidance referenced herein are subject to change and inherent uncertainty. Past performance is not indicative of future results.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, x: 12 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            Investing in securities carries risk, including possible loss of principal. Recipients should conduct their own independent due diligence and consult a SEBI-registered investment adviser before making any investment decision. The speaker accepts no liability for any loss arising from reliance on this material.
+          </motion.p>
+        </div>
+      </div>
+
+      {/* Hazard Warning Stripe at the bottom of viewport (edge-to-edge) */}
+      {active && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
+          className="fixed bottom-0 left-0 right-0 h-6 md:h-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]"
+          style={{
+            background: "repeating-linear-gradient(-45deg, #ffb800, #ffb800 12px, #030308 12px, #030308 24px)"
+          }}
+        />
+      )}
     </div>
   );
 }
