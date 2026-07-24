@@ -59,7 +59,7 @@ export default function Deck({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 1.01 }}
                 transition={{ duration: 0.48, ease: [0.25, 1, 0.5, 1] }}
-                className="absolute inset-0 flex items-center justify-center px-5 py-20 sm:px-10"
+                className="absolute inset-0 flex items-center justify-center px-5 py-12 sm:px-10"
               >
                 <div className="w-full max-w-6xl">
                   {scenes[currentFrameIndex]?.render(true)}

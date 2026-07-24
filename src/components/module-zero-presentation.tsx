@@ -1063,7 +1063,7 @@ function PresenterProfileScene({
   controller: any;
 }) {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full max-w-5xl mx-auto">
       {/* Background zoom layer */}
       <motion.div
         initial={{ scale: 1, opacity: 0.2 }}
@@ -1072,13 +1072,13 @@ function PresenterProfileScene({
         className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
       />
 
-      <div className="relative z-10 grid gap-8 md:grid-cols-[320px_1fr] md:gap-14 items-center">
+      <div className="relative z-10 grid gap-6 md:grid-cols-[250px_1fr] md:gap-10 items-center">
         {/* Left Column: Styled Photo Card */}
         <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -24 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="glass relative mx-auto w-full max-w-[290px] md:max-w-none rounded-2xl border border-accent-gold/25 p-3.5 shadow-[0_0_40px_rgba(255,184,0,0.06)] bg-space-panel/90"
+          className="glass relative mx-auto w-full max-w-[240px] md:max-w-none rounded-2xl border border-accent-gold/25 p-2.5 shadow-[0_0_30px_rgba(255,184,0,0.05)] bg-space-panel/90"
         >
           {/* Photo Container */}
           <div className="relative aspect-square overflow-hidden rounded-xl bg-space-black border border-white/5">
@@ -1090,11 +1090,11 @@ function PresenterProfileScene({
           </div>
           
           {/* Card Footer labels */}
-          <div className="mt-3 flex items-center justify-between px-1">
-            <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-accent-gold">
+          <div className="mt-2.5 flex items-center justify-between px-1">
+            <span className="font-mono text-[8px] font-semibold uppercase tracking-wider text-accent-gold">
               PRESENTER ID: RR-CFA
             </span>
-            <span className="font-mono text-[9px] uppercase tracking-wider text-white/30">
+            <span className="font-mono text-[8px] uppercase tracking-wider text-white/30">
               FIRST PRINCIPLES
             </span>
           </div>
@@ -1104,38 +1104,38 @@ function PresenterProfileScene({
         <div className="flex flex-col text-left">
           {/* Speaker tag */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-2"
           >
             <span className="h-1.5 w-1.5 rounded bg-accent-gold" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-accent-gold font-bold">
+            <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-accent-gold font-bold">
               YOUR SPEAKER
             </span>
           </motion.div>
 
           {/* Title */}
           <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-3 text-4xl font-extrabold tracking-tight text-white md:text-5xl"
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mt-1.5 text-3xl font-extrabold tracking-tight text-white md:text-4xl"
           >
             Rahul Rao, CFA
           </motion.h2>
 
           {/* Subtitles / Roles */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-            className="mt-2.5 flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-wider text-accent-gold font-medium"
+            initial={{ opacity: 0, y: 8 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="mt-1.5 flex flex-wrap items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-accent-gold font-medium"
           >
             <span>Investor</span>
-            <span className="text-white/20 px-1 font-sans">|</span>
+            <span className="text-white/20 px-0.5 font-sans">|</span>
             <span>CFA Charterholder</span>
-            <span className="text-white/20 px-1 font-sans">|</span>
+            <span className="text-white/20 px-0.5 font-sans">|</span>
             <span>Accidental Teacher</span>
           </motion.div>
 
@@ -1143,12 +1143,12 @@ function PresenterProfileScene({
           <motion.hr
             initial={{ scaleX: 0 }}
             animate={active ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="my-5 border-t border-white/10 origin-left"
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="my-3.5 border-t border-white/10 origin-left"
           />
 
           {/* Bullet list */}
-          <ul className="space-y-3.5">
+          <ul className="space-y-2">
             {[
               "12 years of active market experience",
               "Aerospace Engineering (UK), began investing at 22",
@@ -1158,12 +1158,12 @@ function PresenterProfileScene({
             ].map((item, idx) => (
               <motion.li
                 key={idx}
-                initial={{ opacity: 0, x: -12 }}
-                animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-                transition={{ duration: 0.5, delay: 0.5 + idx * 0.1, ease: "easeOut" }}
-                className="flex items-start gap-3.5 text-xs md:text-sm leading-relaxed text-white/70"
+                initial={{ opacity: 0, x: -10 }}
+                animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+                transition={{ duration: 0.5, delay: 0.35 + idx * 0.08, ease: "easeOut" }}
+                className="flex items-start gap-2.5 text-xs md:text-[13px] leading-relaxed text-white/70"
               >
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent-gold" />
+                <span className="mt-1.5 h-1.2 w-1.2 shrink-0 bg-accent-gold" />
                 <span>{item}</span>
               </motion.li>
             ))}
@@ -1171,12 +1171,12 @@ function PresenterProfileScene({
 
           {/* Quote block */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ duration: 0.7, delay: 1.1 }}
-            className="mt-8 border-l-2 border-emerald-500 pl-4 py-0.5"
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.7, delay: 0.85 }}
+            className="mt-4.5 border-l-2 border-emerald-500 pl-3.5 py-0.5"
           >
-            <p className="text-sm md:text-base font-semibold italic text-emerald-400">
+            <p className="text-xs md:text-sm font-semibold italic text-emerald-400">
               &ldquo;An idea can change your life, a perspective can change your portfolio.&rdquo;
             </p>
           </motion.div>
@@ -1249,7 +1249,7 @@ function DisclaimerScene({
   controller: any;
 }) {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full max-w-5xl mx-auto pb-4">
       {/* Background zoom layer */}
       <motion.div
         initial={{ scale: 1, opacity: 0.15 }}
@@ -1258,27 +1258,27 @@ function DisclaimerScene({
         className="radial-vignette pointer-events-none absolute inset-0 bg-radial from-accent-gold/5 via-transparent to-transparent"
       />
 
-      <div className="relative z-10 grid gap-8 md:grid-cols-[1.2fr_1.8fr] md:gap-14 items-center">
+      <div className="relative z-10 grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-10 items-center">
         {/* Left Column: Heading and Highlighted Card */}
         <div className="flex flex-col text-left">
           {/* Legal compliance kicker */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-2"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-accent-gold font-bold">
+            <span className="font-mono text-[8px] uppercase tracking-[0.24em] text-accent-gold font-bold">
               00 / Legal Compliance
             </span>
           </motion.div>
 
           {/* Title */}
           <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-3 text-4xl font-black uppercase tracking-tight text-accent-gold md:text-5xl"
+            initial={{ opacity: 0, y: 10 }}
+            animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mt-1.5 text-3xl font-black uppercase tracking-tight text-accent-gold md:text-4xl"
           >
             Disclaimer
           </motion.h2>
@@ -1287,17 +1287,17 @@ function DisclaimerScene({
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 rounded-xl border border-accent-gold/20 bg-space-panel/90 p-5 shadow-xl relative overflow-hidden"
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-5 rounded-xl border border-accent-gold/20 bg-space-panel/90 p-4 shadow-xl relative overflow-hidden"
           >
             {/* Thick left border accent */}
             <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-gold" />
             
-            <div className="pl-3.5">
-              <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-accent-gold">
+            <div className="pl-3">
+              <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-accent-gold">
                 Position Disclosure
               </span>
-              <p className="mt-2 text-xs font-semibold leading-relaxed text-accent-gold">
+              <p className="mt-1.5 text-[11px] font-semibold leading-relaxed text-accent-gold">
                 The speaker and / or associated persons may hold positions in one or more of the securities mentioned, and those positions may change at any time without notice.
               </p>
             </div>
@@ -1305,27 +1305,27 @@ function DisclaimerScene({
         </div>
 
         {/* Right Column: Detailed Disclaimers */}
-        <div className="flex flex-col text-left text-xs leading-relaxed text-white/70 space-y-4">
+        <div className="flex flex-col text-left text-[11px] md:text-xs leading-relaxed text-white/70 space-y-3">
           <motion.p
-            initial={{ opacity: 0, x: 12 }}
-            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0, x: 10 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
           >
             This presentation is for educational and informational purposes only and does not constitute investment advice, a research report, or a recommendation to buy, sell, or hold any security. It is not a solicitation or offer to deal in any security. The companies, sectors, and securities discussed are referenced solely to illustrate the analytical framework and themes presented; their inclusion is not a recommendation.
           </motion.p>
 
           <motion.p
-            initial={{ opacity: 0, x: 12 }}
-            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
+            initial={{ opacity: 0, x: 10 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
           >
             All information drawn from sources believed to be reliable and from publicly available primary documents, but no representation or warranty, express or implied, is made as to its accuracy, completeness, or timeliness. Forward-looking statements and management guidance referenced herein are subject to change and inherent uncertainty. Past performance is not indicative of future results.
           </motion.p>
 
           <motion.p
-            initial={{ opacity: 0, x: 12 }}
-            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 12 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            initial={{ opacity: 0, x: 10 }}
+            animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
           >
             Investing in securities carries risk, including possible loss of principal. Recipients should conduct their own independent due diligence and consult a SEBI-registered investment adviser before making any investment decision. The speaker accepts no liability for any loss arising from reliance on this material.
           </motion.p>
@@ -1335,10 +1335,10 @@ function DisclaimerScene({
       {/* Hazard Warning Stripe at the bottom of viewport (edge-to-edge) */}
       {active && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.8 }}
-          className="fixed bottom-0 left-0 right-0 h-6 md:h-8 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]"
+          transition={{ duration: 0.7, delay: 0.6 }}
+          className="fixed bottom-0 left-0 right-0 h-4 md:h-6 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] pointer-events-none"
           style={{
             background: "repeating-linear-gradient(-45deg, #ffb800, #ffb800 12px, #030308 12px, #030308 24px)"
           }}
