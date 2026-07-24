@@ -38,9 +38,9 @@ export default function TheHookChapter() {
       render: (active) => <OpeningScene active={active} controller={controller} />,
     },
     {
-      id: "transition",
-      name: "The Ecosystem",
-      render: (active) => <TransitionScene active={active} controller={controller} />,
+      id: "value-unlocking",
+      name: "Value Unlocking",
+      render: (active) => <ValueUnlockingScene active={active} controller={controller} />,
     },
     {
       id: "hidden",
@@ -148,143 +148,111 @@ function OpeningScene({ active, controller }: { active: boolean; controller: any
 }
 
 /* ==========================================================================
-   SCENE 2: TRANSITION (Building zoom, exploded division SVG mesh detaching)
+   SCENE 2: VALUE UNLOCKING (Interactive drivers toggle and company reveal)
    ========================================================================== */
-function TransitionScene({ active, controller }: { active: boolean; controller: any }) {
-  const { progress, presentationActive, totalFrames } = controller;
-  const seg = 1 / totalFrames;
+function ValueUnlockingScene({ active, controller }: { active: boolean; controller: any }) {
+  const { presentationActive } = controller;
+  const [showCompanies, setShowCompanies] = useState(false);
 
-  // Scroll mapping: from seg to seg*2, nodes drift apart
-  const driftScroll = useTransform(progress, [seg, seg * 2], [0, 100]);
-  const [driftPos, setDriftPos] = useState(0);
+  const cards = [
+    { letter: "a", text: "Hidden or fast-growing business inside a larger one" },
+    { letter: "b", text: "Loss-making unit dragging consolidated numbers" },
+    { letter: "c", text: "Strategic focus" },
+    { letter: "d", text: "Different investor preference" },
+  ];
 
-  useEffect(() => {
-    if (presentationActive) return;
-    const unsubscribe = driftScroll.on("change", (v) => {
-      setDriftPos(v);
-    });
-    return () => unsubscribe();
-  }, [driftScroll, presentationActive]);
-
-  // Presentation mode autoplay drift
-  useGSAP(() => {
-    if (!presentationActive || !active) {
-      if (presentationActive) setDriftPos(0);
-      return;
-    }
-    gsap.fromTo(
-      { val: 0 },
-      { val: 100 },
-      {
-        val: 100,
-        duration: 3,
-        ease: "power2.out",
-        onUpdate: function () {
-          setDriftPos(this.targets()[0].val);
-        },
-      }
-    );
-  }, [presentationActive, active]);
-
-  // Map coordinates (width: 300, height: 200)
-  const nodeCenter = { x: 150, y: 100 };
-  const d = driftPos / 100; // 0 to 1
-
-  // 4 connected divisions detaching
-  const nodes = [
-    { id: "A", name: "Capital Core", ox: -40, oy: -35, tx: -75, ty: -55, color: "var(--color-accent-gold)" },
-    { id: "B", name: "Legacy Ops", ox: 40, oy: -30, tx: 75, ty: -50, color: "#fff" },
-    { id: "C", name: "Tech Ventures", ox: -45, oy: 35, tx: -80, ty: 60, color: "var(--color-accent-gold)" },
-    { id: "D", name: "Real Estate Stub", ox: 45, oy: 30, tx: 80, ty: 50, color: "#fff" },
+  const companies = [
+    "Aarti Industries", "GHCL", "Bajaj Electricals", "Forbes and Company", 
+    "Vikram Thermo", "RDB Realty", "Rossell India", "Hercules Hoists", 
+    "ITC Hotels", "Sterlite Technologies", "Raymond", "Aditya Birla Fashion", 
+    "Khadim India", "Valor Estate", "Shankara Building Products", "Tata Motors", 
+    "Prima Plastics", "Pricol", "Vedanta", "Chembond", 
+    "Triveni Engineering", "Mirza International", "HEG", "Naperol Investments", 
+    "Oriental Carbon", "Genus Power"
   ];
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 md:items-center">
-      <div>
-        <SceneHeader
-          kicker="First Principles Transition"
-          title="The Corporate Ecosystem"
-          lede="Look underneath a giant corporation. You rarely find a single business. You find a mesh of distinct divisions, bound by a shared balance sheet and corporate head office."
-        />
-        <p className="mt-4 text-xs text-white/50 leading-relaxed max-w-md">
-          As complexity grows, these connections turn into constraints. Operations that should run at different speeds are forced to coordinate, dragging down overall efficiency.
-        </p>
+    <div className="relative flex min-h-[70vh] w-full flex-col justify-between overflow-hidden">
+      {/* Top Header Bar */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-4 w-full">
+        <div>
+          <span className="font-mono text-xs font-semibold text-accent-gold">01</span>
+          <h2 className="mt-1 text-2xl font-black uppercase text-white tracking-tight sm:text-3xl">
+            {showCompanies ? "The Demerger Universe" : "Value unlocking"}
+          </h2>
+        </div>
+        
+        {/* Big visual number "26" on the right */}
+        <div className="font-mono text-5xl font-black text-accent-gold opacity-85 sm:text-6xl tracking-tighter">
+          26
+        </div>
       </div>
 
-      <div className="relative flex items-center justify-center rounded-2xl border border-white/5 bg-space-panel p-6 min-h-[340px]">
-        <svg viewBox="0 0 300 200" className="h-[280px] w-full fill-none overflow-visible">
-          {/* Connector lines that stretch and fade */}
-          {nodes.map((n) => {
-            const currentX = nodeCenter.x + n.ox + (n.tx - n.ox) * d;
-            const currentY = nodeCenter.y + n.oy + (n.ty - n.oy) * d;
-            
-            // lines fade out as nodes detach (drift d > 0.7)
-            const lineOpacity = Math.max(0, 1 - d * 1.3);
-
-            return (
-              <line
-                key={n.id}
-                x1={nodeCenter.x}
-                y1={nodeCenter.y}
-                x2={currentX}
-                y2={currentY}
-                stroke={n.color}
-                strokeWidth="1.2"
-                strokeDasharray="2 3"
-                opacity={lineOpacity}
-              />
-            );
-          })}
-
-          {/* Center Parent Core Node */}
-          <circle
-            cx={nodeCenter.x}
-            cy={nodeCenter.y}
-            r="12"
-            fill="rgba(10,10,20,0.9)"
-            stroke="var(--color-accent-gold)"
-            strokeWidth="2"
-            opacity={Math.max(0.2, 1 - d)}
-          />
-          <text
-            x={nodeCenter.x}
-            y={nodeCenter.y - 18}
-            textAnchor="middle"
-            className="fill-white font-mono text-[8px] uppercase tracking-wider"
-            opacity={Math.max(0, 1 - d)}
-          >
-            Conglomerate Stub
-          </text>
-
-          {/* Detaching nodes */}
-          {nodes.map((n) => {
-            const currentX = nodeCenter.x + n.ox + (n.tx - n.ox) * d;
-            const currentY = nodeCenter.y + n.oy + (n.ty - n.oy) * d;
-
-            return (
-              <g key={n.id}>
-                {/* Glow ring */}
-                <circle
-                  cx={currentX}
-                  cy={currentY}
-                  r="16"
-                  className="fill-white/[0.01] stroke-white/5 stroke-[0.8]"
-                />
-                {/* Main dot */}
-                <circle cx={currentX} cy={currentY} r="6" fill={n.color} />
-                {/* Node label */}
-                <text
-                  x={currentX}
-                  y={currentY + 16}
-                  textAnchor="middle"
-                  className="fill-white/60 font-mono text-[7px] uppercase tracking-widest"
+      {/* Main Content Area */}
+      <div className="my-auto py-6 flex items-center justify-center min-h-[260px]">
+        <AnimatePresence mode="wait">
+          {!showCompanies ? (
+            <motion.div
+              key="drivers"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="grid gap-4 sm:grid-cols-2 w-full"
+            >
+              {cards.map((card) => (
+                <div
+                  key={card.letter}
+                  className="flex items-start gap-3 rounded-xl border border-white/5 bg-[#14130f]/60 hover:bg-[#1a1812] hover:border-accent-gold/20 p-4 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
                 >
-                  {n.name}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+                  <span className="font-mono text-xs font-bold text-accent-gold mt-0.5">
+                    {card.letter}
+                  </span>
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-medium">
+                    {card.text}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="universe"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="w-full flex flex-col gap-4"
+            >
+              <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">
+                Indian corporate demergers mapping to these value drivers:
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center max-h-[200px] overflow-y-auto pr-1">
+                {companies.map((name, i) => (
+                  <motion.span
+                    key={name}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: i * 0.03 }}
+                    className="rounded-full bg-white/5 border border-white/5 hover:border-accent-gold/30 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white/70 hover:text-white transition-all duration-200"
+                  >
+                    {name}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom Button Action */}
+      <div className="flex justify-end border-t border-white/5 pt-4">
+        <button
+          onClick={() => setShowCompanies(!showCompanies)}
+          className="interactive-control flex items-center gap-2 rounded-full border border-accent-gold/40 bg-accent-gold/5 px-6 py-2.5 font-mono text-xs uppercase tracking-wider text-accent-gold hover:bg-accent-gold/15 transition-all duration-300 shadow-[0_0_15px_rgba(255,184,0,0.05)]"
+        >
+          <span>{showCompanies ? "Show value drivers" : "Next"}</span>
+          <ChevronRight size={12} className={cn("transition-transform duration-300", showCompanies && "rotate-180")} />
+        </button>
       </div>
     </div>
   );
