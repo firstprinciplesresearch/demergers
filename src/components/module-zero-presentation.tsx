@@ -1188,6 +1188,36 @@ function DemergerTrackerScene({
   // Tick simulation to flash rows green/red randomly like a terminal
   const [ticks, setTicks] = useState<Record<number, boolean>>({});
 
+  const [statIndex, setStatIndex] = useState(0);
+  const stats = useMemo(() => [
+    {
+      label: "Average Return",
+      value: 67.18,
+      decimals: 2,
+      prefix: "+",
+      suffix: "%",
+      desc: "Average Performance",
+      colorClass: "text-accent-gold",
+    },
+    {
+      label: "Trimmed Mean",
+      value: 31.22,
+      decimals: 2,
+      prefix: "+",
+      suffix: "%",
+      desc: "Outliers Removed",
+      colorClass: "text-accent-gold",
+    },
+  ], []);
+
+  useEffect(() => {
+    if (!active) return;
+    const timer = setInterval(() => {
+      setStatIndex((prev) => (prev + 1) % stats.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [active, stats.length]);
+
   useEffect(() => {
     if (!active) return;
     const interval = setInterval(() => {
@@ -1225,29 +1255,66 @@ function DemergerTrackerScene({
               Entities Tracked
             </span>
             <div className="mt-1 font-mono text-3xl font-black text-white">
-              <AnimatedCounter value={18} active={active} />
+              <AnimatedCounter value={50} active={active} />
             </div>
             <span className="font-mono text-[8px] text-white/30">
               Indian Cases
             </span>
           </div>
 
-          <div className="glass rounded-xl p-4 border-white/5">
-            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
-              Average Return
-            </span>
-            <div className="mt-1 font-mono text-3xl font-black text-accent-gold">
-              <AnimatedCounter
-                value={87.2}
-                active={active}
-                decimals={1}
-                prefix="+"
-                suffix="%"
-              />
+          <div
+            className="glass rounded-xl p-4 border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[100px] cursor-pointer"
+            onClick={() => setStatIndex((prev) => (prev + 1) % stats.length)}
+          >
+            <div className="h-[52px] relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={statIndex}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.25 }}
+                  className="absolute inset-0 flex flex-col"
+                >
+                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40">
+                    {stats[statIndex].label}
+                  </span>
+                  <div className={cn("mt-0.5 font-mono text-3xl font-black", stats[statIndex].colorClass)}>
+                    <AnimatedCounter
+                      value={stats[statIndex].value}
+                      active={active}
+                      decimals={stats[statIndex].decimals}
+                      prefix={stats[statIndex].prefix}
+                      suffix={stats[statIndex].suffix}
+                    />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
-            <span className="font-mono text-[8px] text-white/30">
-              Average Performance
-            </span>
+            
+            <div className="flex items-center justify-between mt-1">
+              <span className="font-mono text-[8px] text-white/30">
+                {stats[statIndex].desc}
+              </span>
+              
+              {/* Carousel Indicators */}
+              <div className="flex gap-1.5">
+                {stats.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setStatIndex(idx);
+                    }}
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full transition-all duration-300",
+                      statIndex === idx ? "bg-accent-gold w-3.5" : "bg-white/20 hover:bg-white/40"
+                    )}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

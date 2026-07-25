@@ -1,10 +1,13 @@
 "use client";
-
+ 
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, X, ChevronDown, BookOpen } from "lucide-react";
 import { cn, formatElapsed } from "@/lib/utils";
 import { getLenis } from "@/lib/lenis-ref";
 import { BrandGlyph, BrandWordmark } from "@/components/brand-mark";
+import { CHAPTERS, chapterHref } from "@/lib/site";
 import type { PresentationController } from "./use-presentation";
 
 export interface PresentationScene {
@@ -13,6 +16,76 @@ export interface PresentationScene {
   label: string; // "01 / n"
   startFrame: number;
   endFrame: number;
+}
+
+function ChaptersDropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={dropdownRef} className="relative select-none">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={cn(
+          "presentation-controls interactive-control glass flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.24em] transition-all cursor-pointer",
+          isOpen ? "text-accent-gold border-accent-gold/20" : "text-white/60 hover:text-white"
+        )}
+      >
+        <BookOpen size={10} />
+        <span>Chapters</span>
+        <ChevronDown size={10} className={cn("transition-transform duration-200", isOpen && "rotate-180")} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="glass absolute right-0 mt-2 w-72 origin-top-right rounded-2xl p-2 shadow-2xl border border-white/10 max-h-[60vh] overflow-y-auto flex flex-col gap-0.5 z-[100] allow-scroll"
+          >
+            <div className="px-3 py-1.5 border-b border-white/5 mb-1 select-none">
+              <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
+                Course Syllabus
+              </span>
+            </div>
+            {CHAPTERS.map((c) => (
+              <Link
+                key={c.slug}
+                href={chapterHref(c.slug)}
+                onClick={() => setIsOpen(false)}
+                className="flex items-start gap-2.5 rounded-xl px-3 py-2 text-left hover:bg-white/5 transition-colors group cursor-pointer"
+              >
+                <span className="font-mono text-[10px] tracking-[0.2em] text-accent-gold mt-0.5 font-semibold group-hover:scale-105 transition-transform">
+                  {c.label.split(" ")[0]}
+                </span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] font-medium text-white/80 group-hover:text-white transition-colors leading-tight">
+                    {c.title}
+                  </span>
+                  <span className="text-[9px] text-white/40 leading-relaxed group-hover:text-white/50 transition-colors">
+                    {c.kicker}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 export default function PresentationChrome({
@@ -50,8 +123,10 @@ export default function PresentationChrome({
         </div>
       </div>
 
-      {/* Top-right: PRESENTATION MODE toggle */}
-      <div className="hud-overlay fixed right-4 top-4 z-50">
+      {/* Top-right: Controls & Navigation */}
+      <div className="hud-overlay fixed right-4 top-4 z-50 flex items-center gap-2">
+        <ChaptersDropdown />
+
         <button
           type="button"
           onClick={() => (presentationActive ? exit() : enter())}
